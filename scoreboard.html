@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Pro Scoreboard</title>
+<style>
+  /* ===========================
+     THEME VARIABLES
+     Change these to re-skin fast
+     =========================== */
+  :root {
+    --bg-image: url('background.jpg');         /* Replace with your image path */
+    --bg-blur: 6px;
+    --bg-darken: 0.35;                         /* 0 (none) to 0.7 (darker) */
+
+    /* Global brand accents */
+    --accent: #00c2ff;
+    --accent-2: #ff2e63;
+
+    /* Typography & layout scale */
+    --font: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    --tight: -0.02em;
+    --radius: 18px;
+    --gap: 22px;
+  }
+
+  /* Optional presets for quick swap (home/away or light/dark) */
+  .theme--light {
+    --panel-bg: rgba(255,255,255,0.10);
+    --panel-border: rgba(255,255,255,0.35);
+    --panel-text: #f7f8fc;
+    --muted: #dbe0ee;
+    --score-glow: 0 0 36px rgba(255,255,255,0.25);
+  }
+  .theme--dark {
+    --panel-bg: rgba(0,0,0,0.16);
+    --panel-border: rgba(255,255,255,0.25);
+    --panel-text: #e9ecf8;
+    --muted: #b7c0d6;
+    --score-glow: 0 0 36px rgba(0,0,0,0.35);
+  }
+
+  /* Base */
+  * { box-sizing: border-box; }
+  html, body {
+    height: 100%;
+    margin: 0;
+    background: #0c1020;
+    font-family: var(--font);
+  }
+
+  /* Background with subtle blur/darken overlay */
+  .stage {
+    position: relative;
+    min-height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+  }
+  .stage::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    filter: blur(var(--bg-blur));
+    transform: scale(1.04);
+  }
+  .stage::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,var(--bg-darken));
+  }
+
+  /* Layout */
+  .wrap {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr minmax(420px, 520px) 1fr;
+    gap: var(--gap);
+    padding: 28px clamp(20px, 4vw, 48px);
+    align-items: center;
+  }
+
+  .panel {
+    backdrop-filter: saturate(1.1) blur(10px);
+    background: var(--panel-bg);
+    border: 1px solid var(--panel-border);
+    border-radius: var(--radius);
+    padding: clamp(12px, 2vw, 18px);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 14px;
+    color: var(--panel-text);
+  }
+
+  .team {
+    display: contents;
+  }
+  .team .logo {
+    width: clamp(56px, 10vw, 86px);
+    aspect-ratio: 1/1;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--panel-border);
+    display: grid; place-items: center;
+    background: rgba(255,255,255,0.06);
+  }
+  .team .logo img {
+    width: 100%; height: 100%; object-fit: cover;
+  }
+
+  .team .meta {
+    display: grid;
+    line-height: 1.1;
+  }
+  .team .name {
+    font-weight: 800;
+    letter-spacing: var(--tight);
+    font-size: clamp(22px, 2.4vw, 34px);
+  }
+  .team .tag {
+    font-size: clamp(11px, 1.2vw, 12px);
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .score {
+    font-variant-numeric: tabular-nums;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    font-size: clamp(56px, 9vw, 120px);
+    line-height: 1;
+    text-shadow: var(--score-glow);
+    display: grid;
+    place-items: center;
+    min-width: 180px;
+  }
+
+  /* Center stack: clock, period, possession, shot clock */
+  .center {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--gap);
+    justify-items: center;
+  }
+  .clock {
+    display: grid;
+    gap: 10px;
+    width: 100%;
+  }
+  .clock .time {
+    font-variant-numeric: tabular-nums;
+    font-weight: 900;
+    font-size: clamp(40px, 7.5vw, 96px);
+    line-height: 1;
+    text-align: center;
+    color: var(--panel-text);
+    letter-spacing: 0.02em;
+  }
+  .clock .subrow {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 12px;
+  }
+  .pill {
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    color: var(--panel-text);
+    border-radius: 999px;
+    padding: 10px 14px;
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+  .pill strong { font-size: 16px; letter-spacing: 0.05em; }
+
+  .controls {
+    display: grid;
+    grid-auto-flow: column;
+    gap: 8px;
+    justify-content: center;
+  }
+  button {
+    border: 1px solid var(--panel-border);
+    background: linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.06));
+    color: var(--panel-text);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font: 600 14px var(--font);
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    backdrop-filter: blur(6px);
+    transition: transform .08s ease, filter .2s ease;
+  }
+  button:hover { filter: brightness(1.05); }
+  button:active { transform: translateY(1px) scale(0.99); }
+
+  .accent { outline: 2px solid var(--accent); }
+  .accent-2 { outline: 2px solid var(--accent-2); }
+
+  /* Footer bar */
+  .footer {
+    position: relative;
+    z-index: 1;
+    padding: 10px clamp(16px, 4vw, 48px) 22px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    color: var(--panel-text);
+  }
+  .footer .left, .footer .right { opacity: 0.85; font-size: 13px; }
+  .footer .centerline {
+    justify-self: center;
+    border-radius: 999px;
+    padding: 8px 14px;
+    border: 1px solid var(--panel-border);
+    background: var(--panel-bg);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Responsive stack on narrow screens */
+  @media (max-width: 980px) {
+    .wrap {
+      grid-template-columns: 1fr;
+      grid-auto-rows: min-content;
+    }
+    .panel { grid-template-columns: auto 1fr auto; }
+  }
+
+  /* Utility: contenteditable styling */
+  [contenteditable="true"] {
+    outline: none;
+    border-bottom: 1px dashed transparent;
+    transition: border-color .2s ease;
+  }
+  [contenteditable="true"]:focus {
+    border-bottom: 1px dashed rgba(255,255,255,0.3);
+  }
+
+  /* Tiny possession arrow */
+  .arrow {
+    width: 10px; height: 10px;
+    border: solid currentColor;
+    border-width: 0 3px 3px 0;
+    display: inline-block;
+    padding: 3px;
+    transform: rotate(225deg); /* default left */
+  }
+  .arrow.right { transform: rotate(45deg); }
+</style>
+</head>
+<body class="theme--dark">
+  <div class="stage">
+    <main class="wrap">
+      <!-- HOME / LIGHT TEAM -->
+      <section class="panel theme--light">
+        <div class="team">
+          <div class="logo">
+            <!-- Replace src with your logo, e.g. logos/home.png -->
+            <img src="" alt="Home Logo" onerror="this.style.opacity='0.25'; this.parentElement.textContent='HOME';" />
+          </div>
+          <div class="meta">
+            <!-- Click to edit live -->
+            <div class="name" id="homeName" contenteditable="true">Home Team</div>
+            <div class="tag">Light • Home</div>
+          </div>
+          <div class="score" id="homeScore">00</div>
+        </div>
+      </section>
+
+      <!-- CENTER: CLOCK + CONTROLS -->
+      <section class="center">
+        <div class="clock">
+          <div class="time" id="mainClock">12:00</div>
+          <div class="subrow">
+            <div class="pill">
+              Possession:
+              <span id="posIndicator"><span class="arrow" id="posArrow"></span> <strong id="posTeam">Home</strong></span>
+            </div>
+
+            <div class="pill">
+              Period:
+              <strong id="periodLabel">Q1</strong>
+            </div>
+
+            <div class="pill">
+              Shot:
+              <strong id="shotClock">24</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button class="accent" id="startPause">Start</button>
+          <button id="resetClock">Reset</button>
+          <button id="periodNext">Next Period</button>
+          <button id="toggleFormat">Quarters</button>
+          <button id="posToggle">Toggle Possession</button>
+          <button class="accent-2" id="fullscreenBtn">Fullscreen</button>
+        </div>
+
+        <!-- Quick set times -->
+        <div class="controls" aria-label="Quick set">
+          <button data-set="12:00">12:00</button>
+          <button data-set="10:00">10:00</button>
+          <button data-set="08:00">08:00</button>
+          <button data-set="20:00">20:00</button>
+          <button data-set="45:00">45:00</button>
+        </div>
+      </section>
+
+      <!-- AWAY / DARK TEAM -->
+      <section class="panel theme--dark">
+        <div class="team">
+          <div class="logo">
+            <!-- Replace src with your logo, e.g. logos/away.png -->
+            <img src="" alt="Away Logo" onerror="this.style.opacity='0.25'; this.parentElement.textContent='AWAY';" />
+          </div>
+          <div class="meta">
+            <div class="name" id="awayName" contenteditable="true">Away Team</div>
+            <div class="tag">Dark • Away</div>
+          </div>
+          <div class="score" id="awayScore">00</div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="left">
+        ⌨️ Shortcuts: Space = Start/Pause • R = Reset • ←/→ = Possession • H/J = Home ± • K/L = Away ±
+      </div>
+      <div class="centerline">Scoreboard</div>
+      <div class="right">
+        🎛 Theme quick tips: body class <code>theme--dark</code> or <code>theme--light</code> • swap <code>--bg-image</code>.
+      </div>
+    </footer>
+  </div>
+
+<script>
+  /* Minimal JS for the clock + a few handy interactions.
+     Remove if you’re wiring external inputs. */
+  const el = (id)=>document.getElementById(id);
+
+  // Scores (manual now; GPIO later)
+  let home = 0, away = 0;
+
+  const homeScore = el('homeScore');
+  const awayScore = el('awayScore');
+
+  function renderScores() {
+    homeScore.textContent = String(home).padStart(2,'0');
+    awayScore.textContent = String(away).padStart(2,'0');
+  }
+  renderScores();
+
+  // Possession
+  let homePossession = true;
+  const posTeam = el('posTeam');
+  const posArrow = el('posArrow');
+  function renderPossession(){
+    posTeam.textContent = homePossession ? 'Home' : 'Away';
+    posArrow.classList.toggle('right', !homePossession);
+  }
+  renderPossession();
+  el('posToggle').addEventListener('click', ()=>{ homePossession = !homePossession; renderPossession(); });
+
+  // Period / format (Quarters or Halves)
+  let format = 'quarters'; // 'quarters' or 'halves'
+  let period = 1;
+  const periodLabel = el('periodLabel');
+  function renderPeriod(){
+    if (format === 'quarters') periodLabel.textContent = 'Q' + period;
+    else periodLabel.textContent = 'H' + period;
+  }
+  renderPeriod();
+
+  el('periodNext').addEventListener('click', ()=>{
+    period += 1;
+    // wrap smartly
+    if (format === 'quarters' && period > 4) period = 1;
+    if (format === 'halves' && period > 2) period = 1;
+    renderPeriod();
+  });
+
+  el('toggleFormat').addEventListener('click', ()=>{
+    format = (format === 'quarters') ? 'halves' : 'quarters';
+    el('toggleFormat').textContent = (format === 'quarters') ? 'Quarters' : 'Halves';
+    period = 1;
+    renderPeriod();
+  });
+
+  // Main game clock
+  const mainClock = el('mainClock');
+  const startPause = el('startPause');
+  const resetClock = el('resetClock');
+
+  let countdown = 12 * 60; // default 12:00
+  let running = false;
+  let rafId = null;
+  let lastTs = null;
+
+  function fmt(sec) {
+    const m = Math.floor(sec/60);
+    const s = Math.floor(sec%60);
+    return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }
+  function renderClock(){ mainClock.textContent = fmt(Math.max(0, countdown)); }
+
+  function tick(ts) {
+    if (!running) return;
+    if (lastTs == null) lastTs = ts;
+    const delta = (ts - lastTs)/1000;
+    if (delta >= 0.016) { // ~60fps
+      countdown -= delta;
+      if (countdown <= 0) {
+        countdown = 0;
+        running = false;
+        startPause.textContent = 'Start';
+        // Optional: buzzer or flash
+        mainClock.style.animation = 'flash 200ms 8';
+        setTimeout(()=> mainClock.style.animation='', 200*8);
+      }
+      renderClock();
+      lastTs = ts;
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  startPause.addEventListener('click', ()=>{
+    running = !running;
+    startPause.textContent = running ? 'Pause' : 'Start';
+    lastTs = null;
+    if (running) rafId = requestAnimationFrame(tick);
+    else cancelAnimationFrame(rafId);
+  });
+
+  resetClock.addEventListener('click', ()=>{
+    running = false;
+    cancelAnimationFrame(rafId);
+    startPause.textContent = 'Start';
+    // reset to 12 or 20/45 based on format & period defaults? Keep simple: reset to current displayed quick-set or default 12.
+    countdown = defaultResetSeconds;
+    renderClock();
+  });
+
+  // Quick set buttons
+  let defaultResetSeconds = 12*60;
+  document.querySelectorAll('[data-set]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const [mm,ss] = btn.dataset.set.split(':').map(Number);
+      countdown = mm*60 + ss;
+      defaultResetSeconds = countdown;
+      renderClock();
+    });
+  });
+
+  // Shot clock (manual, simple)
+  const shotClock = el('shotClock');
+  let shot = 24;
+  function setShot(v){ shot = v; shotClock.textContent = shot; }
+  setShot(24);
+
+  // Keyboard shortcuts (optional)
+  window.addEventListener('keydown', (e)=>{
+    if (e.target.isContentEditable) return; // let you type team names
+    switch(e.key.toLowerCase()){
+      case ' ': e.preventDefault(); startPause.click(); break;
+      case 'r': resetClock.click(); break;
+      case 'arrowleft': homePossession = true; renderPossession(); break;
+      case 'arrowright': homePossession = false; renderPossession(); break;
+      // Score bumpers: H/J for Home -, + ; K/L for Away -, +
+      case 'h': home = Math.max(0, home-1); renderScores(); break;
+      case 'j': home += 1; renderScores(); break;
+      case 'k': away = Math.max(0, away-1); renderScores(); break;
+      case 'l': away += 1; renderScores(); break;
+      // Quick shot clock controls
+      case '[': setShot(Math.max(0, shot-1)); break;
+      case ']': setShot(shot+1); break;
+    }
+  });
+
+  // Fullscreen
+  el('fullscreenBtn').addEventListener('click', ()=>{
+    const docEl = document.documentElement;
+    if (!document.fullscreenElement) docEl.requestFullscreen?.();
+    else document.exitFullscreen?.();
+  });
+
+  // Background image helper (change via CSS var)
+  // document.documentElement.style.setProperty('--bg-image', "url('your-image.jpg')");
+
+  // Tiny flash animation
+  const style = document.createElement('style');
+  style.textContent = `
+  @keyframes flash { 0%{filter:brightness(1)} 50%{filter:brightness(2)} 100%{filter:brightness(1)} }`;
+  document.head.append(style);
+</script>
+</body>
+</html>
