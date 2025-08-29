@@ -23,6 +23,27 @@ function renderBrand(){
   css('--away-logo', state.away.logo ? `url('${state.away.logo}')` : 'url("")');
   css('--bg-img', `url('${state.bg}')`);
 }
+function renderBrand(){
+  $('#homeRibbonText').textContent = state.home.name.toUpperCase();
+  $('#awayRibbonText').textContent = state.away.name.toUpperCase();
+
+  css('--home', state.home.color);
+  css('--away', state.away.color);
+  css('--bg-img', `url('${state.bg}')`);
+
+  // ⬇️ NEW: actually set the <img> sources from the controls
+  const hl = document.getElementById('homeLogo');
+  const al = document.getElementById('awayLogo');
+  if (hl) {
+    const p = (state.home.logo || '').trim();
+    if (p) hl.src = p; else hl.removeAttribute('src');   // no broken icon
+  }
+  if (al) {
+    const p = (state.away.logo || '').trim();
+    if (p) al.src = p; else al.removeAttribute('src');
+  }
+}
+
 function renderScores(){
   $('#homeScore').textContent = String(state.home.score).padStart(2,'0');
   $('#awayScore').textContent = String(state.away.score).padStart(2,'0');
