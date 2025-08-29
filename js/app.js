@@ -1,139 +1,172 @@
-// Safe helpers
+// ===== Utilities
 const $  = s => document.querySelector(s);
 const $$ = s => document.querySelectorAll(s);
 const css = (k, v) => document.documentElement.style.setProperty(k, v);
-const on  = (el, ev, fn) => el && el.addEventListener(ev, fn);
 
-// ---- Sidebar open/close (guarded)
-on($('#openCtl'), 'click', () => $('#aside')?.classList.add('open'));
-on($('#closeCtl'), 'click', () => $('#aside')?.classList.remove('open'));
+// Single source of truth
+const state = {
+  home: { name: 'Sharks', color: '#ff3d5a', logo: '', score: 0, fouls: 0, tol: 3 },
+  away: { name: 'Wolves', color: '#19b8ff', logo: '', score: 0, fouls: 0, tol: 3 },
+  bg: 'images/arena.jpg',
+  format: 'Q',
+  period: 1,
+  possession: 'HOME',
+  dots: 0,
+  countdown: 12 * 60,
+  running: false
+};
 
-// ---- Branding / theme
-function applyTeamFields(){
-  const hn = $('#homeNameInput')?.value || 'Home';
-  const an = $('#awayNameInput')?.value || 'Away';
-  if ($('#homeName'))        $('#homeName').textContent = hn;
-  if ($('#awayName'))        $('#awayName').textContent = an;
-  if ($('#homeRibbonText'))  $('#homeRibbonText').textContent = hn.toUpperCase();
-  if ($('#awayRibbonText'))  $('#awayRibbonText').textContent = an.toUpperCase();
+// ===== Rendering
+function renderBrand(){
+  $('#homeName').textContent = state.home.name;
+  $('#awayName').textContent = state.away.name;
+  $('#homeRibbonText').textContent = state.home.name.toUpperCase();
+  $('#awayRibbonText').textContent = state.away.name.toUpperCase();
 
-  const hc = $('#homeColor')?.value || '#ff3d5a';
-  const ac = $('#awayColor')?.value || '#19b8ff';
-  css('--home', hc);
-  css('--away', ac);
-
-  const hL = ($('#homeLogoInput')?.value || '').trim();
-  const aL = ($('#awayLogoInput')?.value || '').trim();
-  if (hL) css('--home-logo', `url('${hL}')`);
-  if (aL) css('--away-logo', `url('${aL}')`);
-
-  const bg = ($('#bgInput')?.value || '').trim();
-  if (bg) css('--bg-image', `url('${bg}')`);
+  css('--home', state.home.color);
+  css('--away', state.away.color);
+  css('--home-logo', state.home.logo ? `url('${state.home.logo}')` : 'url("")');
+  css('--away-logo', state.away.logo ? `url('${state.away.logo}')` : 'url("")');
+  css('--bg-image', `url('${state.bg}')`);
 }
-['#homeNameInput','#awayNameInput','#homeColor','#awayColor','#homeLogoInput','#awayLogoInput','#bgInput']
-  .forEach(sel => on($(sel), 'input', applyTeamFields));
-
-// ---- Scores / fouls / timeouts
-let home=0, away=0;
-function drawScores(){
-  if ($('#homeScore')) $('#homeScore').textContent = String(home).padStart(2,'0');
-  if ($('#awayScore')) $('#awayScore').textContent = String(away).padStart(2,'0');
-  if ($('#homeVal'))   $('#homeVal').value = home;
-  if ($('#awayVal'))   $('#awayVal').value = away;
+function renderScores(){
+  $('#homeScore').textContent = String(state.home.score).padStart(2,'0');
+  $('#awayScore').textContent = String(state.away.score).padStart(2,'0');
 }
-on($('#homePlus'), 'click', () => { home++; drawScores(); });
-on($('#homeMinus'), 'click', () => { home = Math.max(0, home-1); drawScores(); });
-on($('#awayPlus'), 'click', () => { away++; drawScores(); });
-on($('#awayMinus'), 'click', () => { away = Math.max(0, away-1); drawScores(); });
-on($('#homeVal'),  'input', e => { home = Math.max(0, Number(e.target.value)||0); drawScores(); });
-on($('#awayVal'),  'input', e => { away = Math.max(0, Number(e.target.value)||0); drawScores(); });
-
-function syncFoulsTol(){
-  const hf = Math.max(0, +($('#homeFoulInput')?.value||0));
-  const af = Math.max(0, +($('#awayFoulInput')?.value||0));
-  const ht = Math.max(0, +($('#homeTolInput')?.value||0));
-  const at = Math.max(0, +($('#awayTolInput')?.value||0));
-  if ($('#homeFouls'))  $('#homeFouls').textContent  = hf;
-  if ($('#awayFouls'))  $('#awayFouls').textContent  = af;
-  if ($('#homeTol'))    $('#homeTol').textContent    = ht;
-  if ($('#awayTol'))    $('#awayTol').textContent    = at;
-  if ($('#homeFoulsB')) $('#homeFoulsB').textContent = hf;
-  if ($('#awayFoulsB')) $('#awayFoulsB').textContent = af;
-  if ($('#homeTolB'))   $('#homeTolB').textContent   = ht;
-  if ($('#awayTolB'))   $('#awayTolB').textContent   = at;
+function renderFoulsTol(){
+  $('#homeFouls').textContent = state.home.fouls;
+  $('#awayFouls').textContent = state.away.fouls;
+  $('#homeTol').textContent   = state.home.tol;
+  $('#awayTol').textContent   = state.away.tol;
+  $('#homeFoulsB').textContent = state.home.fouls;
+  $('#awayFoulsB').textContent = state.away.fouls;
+  $('#homeTolB').textContent   = state.home.tol;
+  $('#awayTolB').textContent   = state.away.tol;
 }
-['#homeFoulInput','#awayFoulInput','#homeTolInput','#awayTolInput']
-  .forEach(sel => on($(sel), 'input', syncFoulsTol));
+function renderPeriod(){
+  $('#periodText').textContent = state.format;
+  $('#periodNum').textContent  = state.period;
+  $('#posText').textContent    = state.possession;
+}
+const fmt = s => {
+  s = Math.max(0, Math.floor(s));
+  return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+};
+function renderClock(){
+  $('#clock').textContent = fmt(state.countdown);
+  const st = $('#setTime');
+  if (st && document.activeElement !== st) st.value = fmt(state.countdown);
+}
+function renderDots(){
+  const dots = $$('#ptsRow .dot');
+  dots.forEach((d,i) => d.classList.toggle('on', i < state.dots));
+}
+function renderAll(){
+  renderBrand(); renderScores(); renderFoulsTol(); renderPeriod(); renderClock(); renderDots();
+}
 
-// ---- Period & possession
-let format='Q', period=1, possession='HOME';
-function drawPeriod(){ if($('#periodText')) $('#periodText').textContent = format; if($('#periodNum')) $('#periodNum').textContent = period; }
-function drawPoss(){ if($('#posText')) $('#posText').textContent = possession; }
-on($('#formatSel'), 'change', e => { format = e.target.value; period = 1; drawPeriod(); });
-on($('#prevPeriod'), 'click', () => { period = Math.max(1, period-1); drawPeriod(); });
-on($('#nextPeriod'), 'click', () => { const max = (format==='Q')?4:2; period = (period%max)+1; drawPeriod(); });
-on($('#periodNumInput'), 'input', e => { const v = Math.max(1, +e.target.value||1); period = v; drawPeriod(); });
-on($('#posHome'), 'click', () => { possession='HOME'; drawPoss(); });
-on($('#posAway'), 'click', () => { possession='AWAY'; drawPoss(); });
+// ===== Controls (event delegation)
+const panel = $('#controls');
 
-// ---- Clock (robust)
-let running=false, countdown=12*60, defaultReset=12*60, lastTs=null, rafId=null;
-const fmt = s => { s = Math.max(0, Math.floor(s)); const m = Math.floor(s/60); const x = s%60; return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`; };
-function drawClock(){ if($('#clock')) $('#clock').textContent = fmt(countdown); if($('#setTime')) $('#setTime').value = fmt(countdown); }
-function loop(ts){
-  if(!running) return;
-  if(lastTs==null) lastTs=ts;
-  const d=(ts-lastTs)/1000;
-  if(d>0){
-    countdown -= d;
-    if(countdown<=0){ countdown=0; running=false; const sp=$('#startPause'); if(sp) sp.textContent='Start'; }
-    drawClock(); lastTs=ts;
+// Click handlers
+panel.addEventListener('click', (e) => {
+  const id = e.target.id;
+
+  // Open/close handled outside
+  if (id === 'homePlus') { state.home.score++; renderScores(); return; }
+  if (id === 'homeMinus'){ state.home.score = Math.max(0, state.home.score-1); renderScores(); return; }
+  if (id === 'awayPlus') { state.away.score++; renderScores(); return; }
+  if (id === 'awayMinus'){ state.away.score = Math.max(0, state.away.score-1); renderScores(); return; }
+
+  if (id === 'prevPeriod'){ state.period = Math.max(1, state.period-1); renderPeriod(); return; }
+  if (id === 'nextPeriod'){ const max = (state.format==='Q')?4:2; state.period = (state.period % max) + 1; renderPeriod(); return; }
+  if (id === 'posHome')   { state.possession = 'HOME'; renderPeriod(); return; }
+  if (id === 'posAway')   { state.possession = 'AWAY'; renderPeriod(); return; }
+
+  if (id === 'dotsAdd')   { const maxDots=10; state.dots = (state.dots+1)%(maxDots+1); renderDots(); return; }
+  if (id === 'dotsClear') { state.dots = 0; renderDots(); return; }
+
+  if (id === 'applyTime'){
+    const v = $('#setTime').value.trim();
+    const m = v.match(/^(\d{1,2}):(\d{1,2})$/);
+    if (m){ state.countdown = (+m[1])*60 + Math.min(59, +m[2]); defaultReset = state.countdown; renderClock(); }
+    return;
   }
-  rafId = requestAnimationFrame(loop);
-}
-function parseTime(str){
-  const m = String(str||'').trim().match(/^(\d{1,2}):(\d{1,2})$/);
-  if(!m) return null;
-  const mm = Math.max(0, parseInt(m[1],10)); const ss = Math.max(0, Math.min(59, parseInt(m[2],10)));
-  return mm*60 + ss;
-}
-on($('#applyTime'), 'click', () => {
-  const seconds = parseTime($('#setTime')?.value);
-  if(seconds!=null){ countdown = seconds; defaultReset = seconds; drawClock(); }
-});
-$$('[data-t]').forEach(btn => on(btn, 'click', () => {
-  const [mm,ss] = btn.dataset.t.split(':').map(n=>+n);
-  countdown = (mm*60)+ss; defaultReset = countdown; drawClock();
-}));
-on($('#startPause'), 'click', () => {
-  running=!running;
-  const sp=$('#startPause'); if(sp) sp.textContent = running ? 'Pause' : 'Start';
-  if(running){ lastTs=null; rafId=requestAnimationFrame(loop);} else if(rafId){ cancelAnimationFrame(rafId); }
-});
-on($('#reset'), 'click', () => {
-  running=false; if(rafId) cancelAnimationFrame(rafId);
-  const sp=$('#startPause'); if(sp) sp.textContent='Start';
-  countdown = defaultReset; drawClock();
-});
-on($('#fullscreen'), 'click', () => {
-  const de = document.documentElement;
-  if (!document.fullscreenElement) { (de.requestFullscreen||de.webkitRequestFullscreen||de.msRequestFullscreen)?.call(de); }
-  else { (document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen)?.call(document); }
+
+  if (id === 'startPause'){
+    state.running = !state.running;
+    e.target.textContent = state.running ? 'Pause' : 'Start';
+    if (state.running){ lastTs=null; raf = requestAnimationFrame(tick); }
+    else if (raf){ cancelAnimationFrame(raf); }
+    return;
+  }
+
+  if (id === 'reset'){
+    state.running = false; if (raf) cancelAnimationFrame(raf);
+    $('#startPause').textContent = 'Start';
+    state.countdown = defaultReset; renderClock(); return;
+  }
+
+  if (id === 'fullscreen'){
+    const de = document.documentElement;
+    if (!document.fullscreenElement) (de.requestFullscreen||de.webkitRequestFullscreen||de.msRequestFullscreen).call(de);
+    else (document.exitFullscreen||document.webkitExitFullscreen||document.msExitFullscreen).call(document);
+    return;
+  }
+
+  // Preset time buttons
+  if (e.target.dataset && e.target.dataset.t){
+    const [mm,ss] = e.target.dataset.t.split(':').map(n=>+n);
+    state.countdown = mm*60 + ss; defaultReset = state.countdown; renderClock();
+    return;
+  }
 });
 
-// ---- Dots (center indicators)
-let dotsOn=0; const dots=$$('#ptsRow .dot');
-function redrawDots(){ dots.forEach((d,i)=> d.classList.toggle('on', i<dotsOn)); }
-on($('#dotsAdd'), 'click', () => { dotsOn = (dotsOn+1)%(dots.length+1); redrawDots(); });
-on($('#dotsClear'), 'click', () => { dotsOn=0; redrawDots(); });
+// Input handlers
+panel.addEventListener('input', (e) => {
+  const id = e.target.id, v = e.target.value;
+  if (id === 'homeNameInput'){ state.home.name = v || 'Home'; renderBrand(); return; }
+  if (id === 'awayNameInput'){ state.away.name = v || 'Away'; renderBrand(); return; }
+  if (id === 'homeColor')    { state.home.color = v || '#ff3d5a'; renderBrand(); return; }
+  if (id === 'awayColor')    { state.away.color = v || '#19b8ff'; renderBrand(); return; }
+  if (id === 'homeLogoInput'){ state.home.logo = v.trim(); renderBrand(); return; }
+  if (id === 'awayLogoInput'){ state.away.logo = v.trim(); renderBrand(); return; }
+  if (id === 'bgInput')      { state.bg = v.trim() || 'images/arena.jpg'; renderBrand(); return; }
 
-// ---- Initial paint (safe)
-(function init(){
-  applyTeamFields();
-  drawScores();
-  syncFoulsTol();
-  drawPeriod();
-  drawPoss();
-  drawClock();
-  redrawDots();
-})();
+  if (id === 'homeVal'){ state.home.score = Math.max(0, +v||0); renderScores(); return; }
+  if (id === 'awayVal'){ state.away.score = Math.max(0, +v||0); renderScores(); return; }
+
+  if (id === 'homeFoulInput'){ state.home.fouls = Math.max(0, +v||0); renderFoulsTol(); return; }
+  if (id === 'awayFoulInput'){ state.away.fouls = Math.max(0, +v||0); renderFoulsTol(); return; }
+  if (id === 'homeTolInput') { state.home.tol   = Math.max(0, +v||0); renderFoulsTol(); return; }
+  if (id === 'awayTolInput') { state.away.tol   = Math.max(0, +v||0); renderFoulsTol(); return; }
+
+  if (id === 'formatSel'){ state.format = v; state.period = 1; renderPeriod(); return; }
+  if (id === 'periodNumInput'){ state.period = Math.max(1, +v||1); renderPeriod(); return; }
+});
+
+// Sidebar open/close
+$('#openCtl').addEventListener('click', ()=> $('#aside').classList.add('open'));
+$('#closeCtl').addEventListener('click', ()=> $('#aside').classList.remove('open'));
+
+// Clock loop
+let lastTs=null, raf=null, defaultReset = state.countdown;
+function tick(ts){
+  if (!state.running) return;
+  if (lastTs == null) lastTs = ts;
+  const dt = (ts - lastTs) / 1000;
+  if (dt > 0){
+    state.countdown -= dt;
+    if (state.countdown <= 0){
+      state.countdown = 0;
+      state.running = false;
+      const sp = $('#startPause'); if (sp) sp.textContent = 'Start';
+    }
+    renderClock();
+    lastTs = ts;
+  }
+  raf = requestAnimationFrame(tick);
+}
+
+// Initial paint
+renderAll();
