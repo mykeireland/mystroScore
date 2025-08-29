@@ -3,82 +3,116 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Arena Scoreboard</title>
+  <title>Arena Scoreboard – Sharks vs Wolves</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
+  <!-- Background -->
   <div class="bg"></div>
 
-  <div class="container">
-    <!-- RIBBON: team pipes + big clock -->
-    <div class="ribbon">
-      <div class="tag home"><span id="homeRibbonText">SHARKS</span></div>
-      <div class="centerclock"><div id="clock">12:00</div></div>
-      <div class="tag away"><span id="awayRibbonText">WOLVES</span></div>
-    </div>
-
-    <!-- MAIN BOARD -->
-    <div class="board">
-      <!-- HOME SIDE -->
-      <section class="tile" aria-label="Home team">
-        <div class="logo home" id="homeLogo"></div>
-        <div class="meta">
-          <div class="name" id="homeName">Sharks</div>
-          <div class="sub">Fouls <span id="homeFouls">0</span> • TOL <span id="homeTol">3</span></div>
+  <main class="wrap">
+    <!-- ───────────────── TOP CARDS + LIGHTS ───────────────── -->
+    <section class="topline">
+      <!-- HOME FOULS/TOL -->
+      <div class="side-badges left">
+        <div class="badge-line foul">
+          <span class="label">Fouls</span>
+          <span class="pill" id="homeFoulsBig">0</span>
         </div>
+        <div class="badge-line tol">
+          <span class="label">TOL</span>
+          <span class="pill cyan" id="homeTolBig">3</span>
+        </div>
+      </div>
+
+      <!-- LIGHT PANELS + TITLES -->
+      <div class="lights">
+        <div class="lights-col">
+          <div class="lights-title">
+            <span>PTS</span><span>FLS</span>
+          </div>
+          <div class="lights-grid">
+            <span></span><span></span>
+            <span></span><span></span>
+            <span></span><span></span>
+            <span></span><span></span>
+          </div>
+        </div>
+
+        <div class="lights-col">
+          <div class="lights-title">
+            <span>FLS</span><span>PTS</span>
+          </div>
+          <div class="lights-grid">
+            <span></span><span></span>
+            <span></span><span></span>
+            <span></span><span></span>
+            <span></span><span></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- AWAY FOULS/TOL -->
+      <div class="side-badges right">
+        <div class="badge-line foul">
+          <span class="label">Fouls</span>
+          <span class="pill" id="awayFoulsBig">0</span>
+        </div>
+        <div class="badge-line tol">
+          <span class="label">TOL</span>
+          <span class="pill cyan" id="awayTolBig">3</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────────── NAME BARS + CLOCK OVAL ───────────────── -->
+    <section class="bar-and-clock">
+      <div class="teambar left">
+        <span id="homeRibbonText">SHARKS</span>
+      </div>
+
+      <div class="clock-oval">
+        <div id="clock">12:00</div>
+      </div>
+
+      <div class="teambar right">
+        <span id="awayRibbonText">WOLVES</span>
+      </div>
+    </section>
+
+    <!-- ───────────────── BIG SCORES ───────────────── -->
+    <section class="scores">
+      <div class="side left">
         <div class="score" id="homeScore">00</div>
-      </section>
+      </div>
 
-      <!-- CENTER STACK -->
-      <section class="centerStack" aria-label="Game status">
-        <div class="periodPill">
-          <span class="pill">Period</span>
-          <span class="badge"><span id="periodText">Q</span><span class="value" id="periodNum">1</span></span>
-          <span class="pill">Possession • <strong id="posText">HOME</strong></span>
-        </div>
+      <div class="center-stack">
+        <img class="logo home" id="homeLogo" alt="" />
+        <div class="period-chip">PERIOD</div>
+        <img class="logo away" id="awayLogo" alt="" />
+      </div>
 
-        <div class="stats">
-          <div class="statgroup">
-            <span class="pill" style="outline:2px solid var(--home)">Fouls</span>
-            <span class="badge" style="background:var(--home);color:#0b0f18"><span class="value" id="homeFoulsB">0</span></span>
-            <span class="pill">TOL</span>
-            <span class="badge" style="background:#ffd34e"><span class="value" id="homeTolB">3</span></span>
-          </div>
-
-          <div class="dotrow" id="ptsRow" aria-label="center indicators">
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-            <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          </div>
-
-          <div class="statgroup" style="justify-content:flex-end">
-            <span class="pill" style="outline:2px solid var(--away)">Fouls</span>
-            <span class="badge" style="background:var(--away);color:#0b0f18"><span class="value" id="awayFoulsB">0</span></span>
-            <span class="pill">TOL</span>
-            <span class="badge" style="background:#ffd34e"><span class="value" id="awayTolB">3</span></span>
-          </div>
-        </div>
-      </section>
-
-      <!-- AWAY SIDE -->
-      <section class="tile" aria-label="Away team">
-        <div class="logo away" id="awayLogo"></div>
-        <div class="meta">
-          <div class="name" id="awayName">Wolves</div>
-          <div class="sub">Fouls <span id="awayFouls">0</span> • TOL <span id="awayTol">3</span></div>
-        </div>
+      <div class="side right">
         <div class="score" id="awayScore">00</div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <div class="small footnote">
-      Clean display — use the sidebar (⚙️ bottom-right) for names, logos, background, time, scores, period, possession, fouls & timeouts.
-    </div>
-  </div>
+    <!-- ───────────────── PERIOD NUMBER ───────────────── -->
+    <section class="period-readout">
+      <div class="period-num" id="periodNum">1</div>
+    </section>
 
-  <!-- SIDEBAR CONTROLS -->
-  <button class="control-toggle" id="openCtl" aria-label="Open controls">⚙️ Controls</button>
+    <!-- (Optional) bottom bonus bars; purely visual -->
+    <section class="bonus-bars">
+      <div class="bonus left"><span>B</span><span>B</span></div>
+      <div class="bonus right"><span>B</span><span>B</span></div>
+    </section>
+  </main>
 
-  <aside class="aside" id="aside" aria-label="Controls panel">
+  <!-- ───────────────── SIDEBAR CONTROLS (OFF-DISPLAY) ───────────────── -->
+  <button class="ctl-toggle" id="openCtl">⚙️ Controls</button>
+
+  <aside class="aside" id="aside">
     <header>
       <h2>Scoreboard Controls</h2>
       <button id="closeCtl">Close</button>
@@ -90,22 +124,23 @@
         <div class="row">
           <label for="setTime">Set (MM:SS)</label>
           <div>
-            <input type="text" id="setTime" value="12:00" inputmode="numeric" />
+            <input id="setTime" type="text" value="12:00" inputmode="numeric" />
             <button class="primary" id="applyTime">Apply</button>
           </div>
         </div>
-        <div class="row"><div>Run</div>
+        <div class="row">
+          <div>Run</div>
           <div>
-            <button id="startPause" class="primary">Start</button>
+            <button class="primary" id="startPause">Start</button>
             <button id="reset">Reset</button>
             <button id="fullscreen">Fullscreen</button>
           </div>
         </div>
-        <div class="row"><div>Preset</div>
+        <div class="row">
+          <div>Preset</div>
           <div>
             <button data-t="12:00">12:00</button>
             <button data-t="10:00">10:00</button>
-            <button data-t="08:00">08:00</button>
             <button data-t="20:00">20:00</button>
             <button data-t="45:00">45:00</button>
           </div>
@@ -113,7 +148,40 @@
       </div>
 
       <div class="group">
-        <h3>Period & Possession</h3>
+        <h3>Teams & Branding</h3>
+        <div class="row"><div>Home Name</div><div><input id="homeNameInput" value="Sharks" /></div></div>
+        <div class="row"><div>Away Name</div><div><input id="awayNameInput" value="Wolves" /></div></div>
+        <div class="row"><div>Home Colour</div><div><input id="homeColor" value="#FDB33A" /></div></div>
+        <div class="row"><div>Away Colour</div><div><input id="awayColor" value="#12C8FF" /></div></div>
+        <div class="row"><div>Home Logo URL</div><div><input id="homeLogoInput" placeholder="images/home.png" /></div></div>
+        <div class="row"><div>Away Logo URL</div><div><input id="awayLogoInput" placeholder="images/away.png" /></div></div>
+        <div class="row"><div>Background URL</div><div><input id="bgInput" placeholder="images/arena.jpg" /></div></div>
+      </div>
+
+      <div class="group">
+        <h3>Scores / Fouls / Timeouts</h3>
+        <div class="row">
+          <div>Home Score</div>
+          <div>
+            <button class="warn" id="homeMinus">–</button>
+            <input id="homeVal" type="number" value="0" style="width:80px">
+            <button class="primary" id="homePlus">+</button>
+          </div>
+        </div>
+        <div class="row">
+          <div>Away Score</div>
+          <div>
+            <button class="warn" id="awayMinus">–</button>
+            <input id="awayVal" type="number" value="0" style="width:80px">
+            <button class="primary" id="awayPlus">+</button>
+          </div>
+        </div>
+        <div class="row"><div>Home Fouls / TOL</div><div><input id="homeFoulInput" type="number" value="0" style="width:80px"><input id="homeTolInput" type="number" value="3" style="width:80px"></div></div>
+        <div class="row"><div>Away Fouls / TOL</div><div><input id="awayFoulInput" type="number" value="0" style="width:80px"><input id="awayTolInput" type="number" value="3" style="width:80px"></div></div>
+      </div>
+
+      <div class="group">
+        <h3>Game Format</h3>
         <div class="row"><div>Format</div>
           <div>
             <select id="formatSel">
@@ -125,7 +193,7 @@
         <div class="row"><div>Period</div>
           <div>
             <button id="prevPeriod">–</button>
-            <input type="number" id="periodNumInput" min="1" value="1" style="width:80px" />
+            <input id="periodNumInput" type="number" min="1" value="1" style="width:80px">
             <button id="nextPeriod">+</button>
           </div>
         </div>
@@ -137,62 +205,7 @@
         </div>
       </div>
 
-      <div class="group">
-        <h3>Teams / Branding</h3>
-        <div class="row"><div>Home Name</div><div><input id="homeNameInput" type="text" value="Sharks" /></div></div>
-        <div class="row"><div>Home Logo URL</div><div><input id="homeLogoInput" type="text" placeholder="images/home.png" /></div></div>
-        <div class="row"><div>Home Colour</div><div><input id="homeColor" type="text" value="#ff3d5a" /></div></div>
-
-        <div class="row"><div>Away Name</div><div><input id="awayNameInput" type="text" value="Wolves" /></div></div>
-        <div class="row"><div>Away Logo URL</div><div><input id="awayLogoInput" type="text" placeholder="images/away.png" /></div></div>
-        <div class="row"><div>Away Colour</div><div><input id="awayColor" type="text" value="#19b8ff" /></div></div>
-
-        <div class="row"><div>Background URL</div><div><input id="bgInput" type="text" placeholder="images/arena.jpg" /></div></div>
-      </div>
-
-      <div class="group">
-        <h3>Scores / Fouls / Timeouts</h3>
-        <div class="row"><div>Home Score</div>
-          <div>
-            <button class="warn" id="homeMinus">–</button>
-            <input id="homeVal" type="number" value="0" style="width:80px" />
-            <button class="primary" id="homePlus">+</button>
-          </div>
-        </div>
-        <div class="row"><div>Away Score</div>
-          <div>
-            <button class="warn" id="awayMinus">–</button>
-            <input id="awayVal" type="number" value="0" style="width:80px" />
-            <button class="primary" id="awayPlus">+</button>
-          </div>
-        </div>
-
-        <div class="row"><div>Home Fouls / TOL</div>
-          <div>
-            <input id="homeFoulInput" type="number" value="0" style="width:80px" />
-            <input id="homeTolInput" type="number" value="3" style="width:80px" />
-          </div>
-        </div>
-        <div class="row"><div>Away Fouls / TOL</div>
-          <div>
-            <input id="awayFoulInput" type="number" value="0" style="width:80px" />
-            <input id="awayTolInput" type="number" value="3" style="width:80px" />
-          </div>
-        </div>
-      </div>
-
-      <div class="group">
-        <h3>Center Indicators</h3>
-        <div class="row">
-          <div>Dots</div>
-          <div>
-            <button id="dotsClear">Clear</button>
-            <button id="dotsAdd" class="primary">Toggle Dots</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="small">Tip: for kiosk, hide the ⚙️ button via CSS or comment it out.</div>
+      <div class="small">All controls live here. The main board is display-only.</div>
     </div>
   </aside>
 
