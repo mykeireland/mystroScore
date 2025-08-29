@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Arena Scoreboard</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
   <div class="bg"></div>
@@ -20,7 +20,7 @@
     <!-- MAIN BOARD -->
     <div class="board">
       <!-- HOME SIDE -->
-      <section class="tile">
+      <section class="tile" aria-label="Home team">
         <div class="logo home" id="homeLogo"></div>
         <div class="meta">
           <div class="name" id="homeName">Sharks</div>
@@ -30,10 +30,10 @@
       </section>
 
       <!-- CENTER STACK -->
-      <section class="centerStack">
+      <section class="centerStack" aria-label="Game status">
         <div class="periodPill">
           <span class="pill">Period</span>
-          <span class="badge" id="periodBadge"><span id="periodText">Q</span> <span class="value" id="periodNum">1</span></span>
+          <span class="badge" id="periodBadge"><span id="periodText">Q</span><span class="value" id="periodNum">1</span></span>
           <span class="pill" id="possessionPill">Possession • <strong id="posText">HOME</strong></span>
         </div>
 
@@ -44,11 +44,13 @@
             <span class="pill">TOL</span>
             <span class="badge" style="background:#ffd34e"><span class="value" id="homeTolB">3</span></span>
           </div>
-          <div class="dotrow" id="ptsRow">
-            <!-- 10 dots -->
+
+          <div class="dotrow" id="ptsRow" aria-label="center indicators">
+            <!-- 10 indicators -->
             <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
             <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
           </div>
+
           <div class="statgroup" style="justify-content:flex-end">
             <span class="pill" style="outline:2px solid var(--away)">Fouls</span>
             <span class="badge" style="background:var(--away);color:#0b0f18"><span class="value" id="awayFoulsB">0</span></span>
@@ -59,7 +61,7 @@
       </section>
 
       <!-- AWAY SIDE -->
-      <section class="tile">
+      <section class="tile" aria-label="Away team">
         <div class="logo away" id="awayLogo"></div>
         <div class="meta">
           <div class="name" id="awayName">Wolves</div>
@@ -69,15 +71,14 @@
       </section>
     </div>
 
-    <!-- FOOTER NOTE -->
     <div class="small footnote">
-      Clean display — use the sidebar (⚙️ bottom-right) to control names, logos, background, time, scores, period, possession, fouls & timeouts.
+      Clean display — use the sidebar (⚙️ bottom-right) for names, logos, background, time, scores, period, possession, fouls & timeouts.
     </div>
   </div>
 
   <!-- SIDEBAR CONTROLS -->
-  <button class="control-toggle" id="openCtl">⚙️ Controls</button>
-  <aside class="aside" id="aside">
+  <button class="control-toggle" id="openCtl" aria-label="Open controls">⚙️ Controls</button>
+  <aside class="aside" id="aside" aria-label="Controls panel">
     <header>
       <h2>Scoreboard Controls</h2>
       <button id="closeCtl">Close</button>
@@ -85,9 +86,9 @@
     <div class="body">
       <div class="group">
         <h3>Clock</h3>
-        <div class="row"><label>Set (MM:SS)</label>
+        <div class="row"><label for="setTime">Set (MM:SS)</label>
           <div>
-            <input type="text" id="setTime" value="12:00">
+            <input type="text" id="setTime" value="12:00" inputmode="numeric" />
             <button class="primary" id="applyTime">Apply</button>
           </div>
         </div>
@@ -120,7 +121,7 @@
         <div class="row"><div>Period</div>
           <div>
             <button id="prevPeriod">–</button>
-            <input type="number" id="periodNumInput" min="1" value="1" style="width:80px">
+            <input type="number" id="periodNumInput" min="1" value="1" style="width:80px" />
             <button id="nextPeriod">+</button>
           </div>
         </div>
@@ -134,13 +135,13 @@
 
       <div class="group">
         <h3>Teams / Branding</h3>
-        <div class="row"><div>Home Name</div><div><input id="homeNameInput" type="text" value="Sharks"></div></div>
-        <div class="row"><div>Home Logo URL</div><div><input id="homeLogoInput" type="text" placeholder="images/home.png"></div></div>
-        <div class="row"><div>Home Colour</div><div><input id="homeColor" type="text" value="#ff3d5a"></div></div>
-        <div class="row"><div>Away Name</div><div><input id="awayNameInput" type="text" value="Wolves"></div></div>
-        <div class="row"><div>Away Logo URL</div><div><input id="awayLogoInput" type="text" placeholder="images/away.png"></div></div>
-        <div class="row"><div>Away Colour</div><div><input id="awayColor" type="text" value="#19b8ff"></div></div>
-        <div class="row"><div>Background URL</div><div><input id="bgInput" type="text" placeholder="images/arena.jpg"></div></div>
+        <div class="row"><div>Home Name</div><div><input id="homeNameInput" type="text" value="Sharks" /></div></div>
+        <div class="row"><div>Home Logo URL</div><div><input id="homeLogoInput" type="text" placeholder="images/home.png" /></div></div>
+        <div class="row"><div>Home Colour</div><div><input id="homeColor" type="text" value="#ff3d5a" /></div></div>
+        <div class="row"><div>Away Name</div><div><input id="awayNameInput" type="text" value="Wolves" /></div></div>
+        <div class="row"><div>Away Logo URL</div><div><input id="awayLogoInput" type="text" placeholder="images/away.png" /></div></div>
+        <div class="row"><div>Away Colour</div><div><input id="awayColor" type="text" value="#19b8ff" /></div></div>
+        <div class="row"><div>Background URL</div><div><input id="bgInput" type="text" placeholder="images/arena.jpg" /></div></div>
       </div>
 
       <div class="group">
@@ -148,36 +149,35 @@
         <div class="row"><div>Home Score</div>
           <div>
             <button class="warn" id="homeMinus">–</button>
-            <input id="homeVal" type="number" value="0" style="width:80px">
+            <input id="homeVal" type="number" value="0" style="width:80px" />
             <button class="primary" id="homePlus">+</button>
           </div>
         </div>
         <div class="row"><div>Away Score</div>
           <div>
             <button class="warn" id="awayMinus">–</button>
-            <input id="awayVal" type="number" value="0" style="width:80px">
+            <input id="awayVal" type="number" value="0" style="width:80px" />
             <button class="primary" id="awayPlus">+</button>
           </div>
         </div>
         <div class="row"><div>Home Fouls / TOL</div>
           <div>
-            <input id="homeFoulInput" type="number" value="0" style="width:80px">
-            <input id="homeTolInput" type="number" value="3" style="width:80px">
+            <input id="homeFoulInput" type="number" value="0" style="width:80px" />
+            <input id="homeTolInput" type="number" value="3" style="width:80px" />
           </div>
         </div>
         <div class="row"><div>Away Fouls / TOL</div>
           <div>
-            <input id="awayFoulInput" type="number" value="0" style="width:80px">
-            <input id="awayTolInput" type="number" value="3" style="width:80px">
+            <input id="awayFoulInput" type="number" value="0" style="width:80px" />
+            <input id="awayTolInput" type="number" value="3" style="width:80px" />
           </div>
         </div>
       </div>
 
       <div class="group">
-        <h3>Center Dots Row</h3>
-        <div class="small">Quick indicator — toggles fill left→right.</div>
+        <h3>Center Indicators</h3>
         <div class="row">
-          <div>Set Count</div>
+          <div>Dots</div>
           <div>
             <button id="dotsClear">Clear</button>
             <button id="dotsAdd" class="primary">Toggle Dots</button>
