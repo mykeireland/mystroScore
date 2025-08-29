@@ -12,9 +12,9 @@
   <div class="container">
     <!-- RIBBON: team pipes + big clock -->
     <div class="ribbon">
-      <div class="tag home" id="homeRibbon"><span id="homeRibbonText">SHARKS</span></div>
+      <div class="tag home"><span id="homeRibbonText">SHARKS</span></div>
       <div class="centerclock"><div id="clock">12:00</div></div>
-      <div class="tag away" id="awayRibbon"><span id="awayRibbonText">WOLVES</span></div>
+      <div class="tag away"><span id="awayRibbonText">WOLVES</span></div>
     </div>
 
     <!-- MAIN BOARD -->
@@ -33,8 +33,8 @@
       <section class="centerStack" aria-label="Game status">
         <div class="periodPill">
           <span class="pill">Period</span>
-          <span class="badge" id="periodBadge"><span id="periodText">Q</span><span class="value" id="periodNum">1</span></span>
-          <span class="pill" id="possessionPill">Possession • <strong id="posText">HOME</strong></span>
+          <span class="badge"><span id="periodText">Q</span><span class="value" id="periodNum">1</span></span>
+          <span class="pill">Possession • <strong id="posText">HOME</strong></span>
         </div>
 
         <div class="stats">
@@ -46,7 +46,6 @@
           </div>
 
           <div class="dotrow" id="ptsRow" aria-label="center indicators">
-            <!-- 10 indicators -->
             <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
             <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
           </div>
@@ -78,15 +77,18 @@
 
   <!-- SIDEBAR CONTROLS -->
   <button class="control-toggle" id="openCtl" aria-label="Open controls">⚙️ Controls</button>
+
   <aside class="aside" id="aside" aria-label="Controls panel">
     <header>
       <h2>Scoreboard Controls</h2>
       <button id="closeCtl">Close</button>
     </header>
-    <div class="body">
+
+    <div class="body" id="controls">
       <div class="group">
         <h3>Clock</h3>
-        <div class="row"><label for="setTime">Set (MM:SS)</label>
+        <div class="row">
+          <label for="setTime">Set (MM:SS)</label>
           <div>
             <input type="text" id="setTime" value="12:00" inputmode="numeric" />
             <button class="primary" id="applyTime">Apply</button>
@@ -113,10 +115,12 @@
       <div class="group">
         <h3>Period & Possession</h3>
         <div class="row"><div>Format</div>
-          <div><select id="formatSel">
-            <option value="Q">Quarters (Q1–Q4)</option>
-            <option value="H">Halves (H1–H2)</option>
-          </select></div>
+          <div>
+            <select id="formatSel">
+              <option value="Q">Quarters (Q1–Q4)</option>
+              <option value="H">Halves (H1–H2)</option>
+            </select>
+          </div>
         </div>
         <div class="row"><div>Period</div>
           <div>
@@ -138,9 +142,11 @@
         <div class="row"><div>Home Name</div><div><input id="homeNameInput" type="text" value="Sharks" /></div></div>
         <div class="row"><div>Home Logo URL</div><div><input id="homeLogoInput" type="text" placeholder="images/home.png" /></div></div>
         <div class="row"><div>Home Colour</div><div><input id="homeColor" type="text" value="#ff3d5a" /></div></div>
+
         <div class="row"><div>Away Name</div><div><input id="awayNameInput" type="text" value="Wolves" /></div></div>
         <div class="row"><div>Away Logo URL</div><div><input id="awayLogoInput" type="text" placeholder="images/away.png" /></div></div>
         <div class="row"><div>Away Colour</div><div><input id="awayColor" type="text" value="#19b8ff" /></div></div>
+
         <div class="row"><div>Background URL</div><div><input id="bgInput" type="text" placeholder="images/arena.jpg" /></div></div>
       </div>
 
@@ -160,6 +166,7 @@
             <button class="primary" id="awayPlus">+</button>
           </div>
         </div>
+
         <div class="row"><div>Home Fouls / TOL</div>
           <div>
             <input id="homeFoulInput" type="number" value="0" style="width:80px" />
@@ -189,6 +196,6 @@
     </div>
   </aside>
 
-  <script src="js/app.js"></script>
+  <script src="js/app.js" defer></script>
 </body>
 </html>
