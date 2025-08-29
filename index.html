@@ -48,63 +48,70 @@ body{
 /* ===== Layout ===== */
 .container{
   min-height:100dvh;
-  padding:32px clamp(16px,3vw,32px);
+  padding:20px clamp(16px,2.5vw,28px);
   display:grid;
-  grid-template-rows: auto 1fr auto;
-  gap:24px;
+  grid-template-rows: auto auto 1fr;
+  row-gap: 18px;
 }
 
-/* ===== Top ribbon (team names) ===== */
+/* ===== Top ribbons + clock ===== */
 .ribbon{
-  display:grid; grid-template-columns: 1fr max(340px, 24vw) 1fr; align-items:center; gap:18px;
+  display:grid;
+  grid-template-columns: 1fr minmax(320px, 26vw) 1fr;
+  align-items:center;
+  column-gap:16px;
+  margin-top:2px;
 }
 .ribbon .tag{
   position:relative;
-  background:var(--glass);
-  border:1px solid var(--glass-border);
+  background:transparent; /* pipe style */
+  border:2px solid var(--glass-border);
   border-radius:999px;
   text-transform:uppercase;
   letter-spacing:.16em;
   font-weight:800;
-  padding:12px 18px 12px 56px;
+  padding:6px 16px 6px 48px;
 }
 .ribbon .tag::before{
   content:"";
   position:absolute; left:8px; top:50%; transform:translateY(-50%);
-  width:38px; height:38px; border-radius:50%;
-  background:linear-gradient(180deg,rgba(255,255,255,.25),rgba(255,255,255,.08));
+  width:28px; height:28px; border-radius:50%;
+  background: radial-gradient(circle at 40% 40%, rgba(255,255,255,.25), rgba(255,255,255,.06));
   border:1px solid var(--glass-border);
   box-shadow: inset 0 0 0 3px rgba(0,0,0,.25);
 }
 .tag.home{ outline:3px solid var(--home) }
 .tag.away{ outline:3px solid var(--away) }
+
 .ribbon .centerclock{
   display:grid; place-items:center;
   background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
-  border:1px solid var(--glass-border); border-radius:999px; padding:10px 18px;
+  border:1px solid var(--glass-border); border-radius:28px; padding:8px 16px;
   box-shadow: 0 8px 30px rgba(0,0,0,.25);
 }
 #clock{
   font-weight:900; letter-spacing:.02em;
   font-variant-numeric: tabular-nums;
-  font-size: clamp(34px,7vw,84px);
+  font-size: clamp(36px, 6.2vw, 76px);
 }
 
 /* ===== Main board (scores + logos + period) ===== */
 .board{
   display:grid;
-  grid-template-columns: 1fr 420px 1fr;
+  grid-template-columns: minmax(420px, 1fr) minmax(380px, 520px) minmax(420px, 1fr);
   align-items:center;
-  gap:28px;
+  column-gap: 24px;
+  margin-top: -4px;
 }
 .tile{
   position:relative;
   background:var(--glass);
   border:1px solid var(--glass-border);
   border-radius:var(--radius);
-  padding:20px clamp(16px,2vw,24px);
+  padding:18px clamp(16px,1.8vw,22px);
+  min-height: 180px;
   display:grid; grid-template-columns: auto 1fr auto; align-items:center; gap:16px;
-  min-height:160px;
+  box-shadow: 0 10px 26px rgba(0,0,0,.22);
 }
 .logo{
   width:72px; height:72px; border-radius:16px;
@@ -118,7 +125,7 @@ body{
 .meta .sub{ color:var(--muted); text-transform:uppercase; letter-spacing:.16em; font-size:12px }
 
 .score{
-  font-size: clamp(72px,10vw,140px);
+  font-size: clamp(84px, 9.2vw, 132px);
   font-weight:900; line-height:1; letter-spacing:.02em;
   font-variant-numeric: tabular-nums;
   text-shadow: 0 0 36px rgba(0,0,0,.35);
@@ -126,29 +133,36 @@ body{
 }
 
 .centerStack{
-  display:grid; gap:16px; justify-items:center;
+  position:relative;
+  z-index:2;
+  display:grid;
+  gap:14px;
+  justify-items:center;
+  max-width: 520px;
+  margin-inline:auto;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,.22));
 }
 .periodPill{
-  display:grid; grid-auto-flow:column; gap:16px; align-items:center;
+  display:grid; grid-auto-flow:column; gap:14px; align-items:center;
 }
 .pill{
   border:1px solid var(--glass-border); background:var(--glass);
-  border-radius:999px; padding:10px 14px; text-transform:uppercase; letter-spacing:.16em; font-size:12px;
+  border-radius:999px; padding:8px 12px; text-transform:uppercase; letter-spacing:.14em; font-size:11px;
 }
 .badge{
   display:inline-grid; grid-auto-flow:column; align-items:center; gap:8px;
-  border-radius:999px; padding:10px 14px; font-weight:800; letter-spacing:.08em;
+  border-radius:999px; padding:8px 12px; font-weight:800; letter-spacing:.08em;
   color:#0b0f18; background:#ffd34e;
 }
-.badge .value{ background:#0b0f18; color:#ffd34e; padding:4px 10px; border-radius:999px; font-variant-numeric:tabular-nums }
+.badge .value{ background:#0b0f18; color:#ffd34e; padding:3px 10px; border-radius:999px; font-variant-numeric:tabular-nums }
 
 .stats{
-  display:grid; grid-template-columns: 1fr auto 1fr; gap:16px; align-items:center;
+  display:grid; grid-template-columns: 1fr auto 1fr; gap:14px; align-items:center;
 }
 .statgroup{
   display:grid; grid-auto-flow:column; gap:10px; align-items:center; justify-content:flex-start;
 }
-.dotrow{ display:grid; grid-template-columns: repeat(5, 16px); gap:10px }
+.dotrow{ display:grid; grid-template-columns: repeat(10, 16px); gap:10px }
 .dot{ width:16px; height:16px; border-radius:50%; background:rgba(255,255,255,.12); border:1px solid var(--glass-border) }
 .dot.on{ background:#5cff9a; }
 
@@ -187,12 +201,14 @@ button.warn{ outline:2px solid var(--home) }
 
 .small{ font-size:12px; color:var(--muted) }
 
-/* Responsive */
+/* ===== Responsive ===== */
+@media (max-width:1200px){
+  .board{ grid-template-columns: 1fr minmax(340px, 520px) 1fr; }
+}
 @media (max-width:1000px){
-  .board{ grid-template-columns: 1fr; }
-  .ribbon{ grid-template-columns: 1fr; }
-  .stats{ grid-template-columns:1fr; }
+  .board{ grid-template-columns: 1fr; row-gap:16px; }
   .score{ text-align:left; }
+  .centerStack{ max-width: 520px; }
 }
 </style>
 </head>
@@ -200,11 +216,11 @@ button.warn{ outline:2px solid var(--home) }
 <div class="bg"></div>
 
 <div class="container">
-  <!-- RIBBON: team name bars and big clock in center -->
+  <!-- RIBBON: team name pipes + big clock -->
   <div class="ribbon">
-    <div class="tag home" id="homeRibbon"><span id="homeRibbonText">HOME</span></div>
+    <div class="tag home" id="homeRibbon"><span id="homeRibbonText">SHARKS</span></div>
     <div class="centerclock"><div id="clock">12:00</div></div>
-    <div class="tag away" id="awayRibbon"><span id="awayRibbonText">AWAY</span></div>
+    <div class="tag away" id="awayRibbon"><span id="awayRibbonText">WOLVES</span></div>
   </div>
 
   <!-- MAIN BOARD -->
@@ -229,286 +245,4 @@ button.warn{ outline:2px solid var(--home) }
 
       <div class="stats">
         <div class="statgroup">
-          <span class="pill" style="outline:2px solid var(--home)">Fouls</span>
-          <span class="badge" style="background:var(--home);color:#0b0f18"> <span class="value" id="homeFoulsB">0</span></span>
-          <span class="pill">TOL</span>
-          <span class="badge" style="background:#ffd34e"><span class="value" id="homeTolB">3</span></span>
-        </div>
-        <div class="dotrow" id="ptsRow">
-          <!-- 10 dots for quick player points indicators (toggle in controls) -->
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-        </div>
-        <div class="statgroup" style="justify-content:flex-end">
-          <span class="pill" style="outline:2px solid var(--away)">Fouls</span>
-          <span class="badge" style="background:var(--away);color:#0b0f18"> <span class="value" id="awayFoulsB">0</span></span>
-          <span class="pill">TOL</span>
-          <span class="badge" style="background:#ffd34e"><span class="value" id="awayTolB">3</span></span>
-        </div>
-      </div>
-    </section>
-
-    <!-- AWAY SIDE -->
-    <section class="tile">
-      <div class="logo away" id="awayLogo"></div>
-      <div class="meta">
-        <div class="name" id="awayName">Wolves</div>
-        <div class="sub">Fouls <span id="awayFouls">0</span> • TOL <span id="awayTol">3</span></div>
-      </div>
-      <div class="score" id="awayScore">00</div>
-    </section>
-  </div>
-
-  <!-- FOOTER INFO (minimal, display only) -->
-  <div class="small" style="display:flex;justify-content:center;opacity:.75">
-    Clean display — controls are in the sidebar (gear bottom-right). Set names, logos, time, period, fouls & timeouts there.
-  </div>
-</div>
-
-<!-- SIDEBAR CONTROLS (OFF-SCREEN) -->
-<button class="control-toggle" id="openCtl">⚙️ Controls</button>
-<aside class="aside" id="aside">
-  <header>
-    <h2>Scoreboard Controls</h2>
-    <button id="closeCtl">Close</button>
-  </header>
-  <div class="body">
-    <div class="group">
-      <h3>Clock</h3>
-      <div class="row"><label>Set (MM:SS)</label>
-        <div>
-          <input type="text" id="setTime" value="12:00">
-          <button class="primary" id="applyTime">Apply</button>
-        </div>
-      </div>
-      <div class="row"><div>Run</div>
-        <div>
-          <button id="startPause" class="primary">Start</button>
-          <button id="reset">Reset</button>
-          <button id="fullscreen">Fullscreen</button>
-        </div>
-      </div>
-      <div class="row"><div>Preset</div>
-        <div>
-          <button data-t="12:00">12:00</button>
-          <button data-t="10:00">10:00</button>
-          <button data-t="08:00">08:00</button>
-          <button data-t="20:00">20:00</button>
-          <button data-t="45:00">45:00</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="group">
-      <h3>Period & Possession</h3>
-      <div class="row"><div>Format</div>
-        <div><select id="formatSel">
-          <option value="Q">Quarters (Q1–Q4)</option>
-          <option value="H">Halves (H1–H2)</option>
-        </select></div>
-      </div>
-      <div class="row"><div>Period</div>
-        <div>
-          <button id="prevPeriod">–</button>
-          <input type="number" id="periodNumInput" min="1" value="1" style="width:80px">
-          <button id="nextPeriod">+</button>
-        </div>
-      </div>
-      <div class="row"><div>Possession</div>
-        <div>
-          <button id="posHome">Home</button>
-          <button id="posAway">Away</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="group">
-      <h3>Teams</h3>
-      <div class="row">
-        <div>Home Name</div>
-        <div><input id="homeNameInput" type="text" value="Sharks"></div>
-      </div>
-      <div class="row">
-        <div>Home Logo URL</div>
-        <div><input id="homeLogoInput" type="text" placeholder="images/home.png"></div>
-      </div>
-      <div class="row">
-        <div>Home Colour</div>
-        <div><input id="homeColor" type="text" value="#ff3d5a"></div>
-      </div>
-      <div class="row">
-        <div>Away Name</div>
-        <div><input id="awayNameInput" type="text" value="Wolves"></div>
-      </div>
-      <div class="row">
-        <div>Away Logo URL</div>
-        <div><input id="awayLogoInput" type="text" placeholder="images/away.png"></div>
-      </div>
-      <div class="row">
-        <div>Away Colour</div>
-        <div><input id="awayColor" type="text" value="#19b8ff"></div>
-      </div>
-      <div class="row">
-        <div>Background URL</div>
-        <div><input id="bgInput" type="text" placeholder="images/arena.jpg"></div>
-      </div>
-    </div>
-
-    <div class="group">
-      <h3>Scores / Fouls / Timeouts</h3>
-      <div class="row"><div>Home Score</div>
-        <div>
-          <button class="warn" id="homeMinus">–</button>
-          <input id="homeVal" type="number" value="0" style="width:80px">
-          <button class="primary" id="homePlus">+</button>
-        </div>
-      </div>
-      <div class="row"><div>Away Score</div>
-        <div>
-          <button class="warn" id="awayMinus">–</button>
-          <input id="awayVal" type="number" value="0" style="width:80px">
-          <button class="primary" id="awayPlus">+</button>
-        </div>
-      </div>
-      <div class="row"><div>Home Fouls / TOL</div>
-        <div>
-          <input id="homeFoulInput" type="number" value="0" style="width:80px">
-          <input id="homeTolInput" type="number" value="3" style="width:80px">
-        </div>
-      </div>
-      <div class="row"><div>Away Fouls / TOL</div>
-        <div>
-          <input id="awayFoulInput" type="number" value="0" style="width:80px">
-          <input id="awayTolInput" type="number" value="3" style="width:80px">
-        </div>
-      </div>
-    </div>
-
-    <div class="group">
-      <h3>Dots Row (Player points quick indicators)</h3>
-      <div class="small">Click “Toggle Dots” to fill/clear sequential dots in the center row.</div>
-      <div class="row">
-        <div>Set Count</div>
-        <div>
-          <button id="dotsClear">Clear</button>
-          <button id="dotsAdd" class="primary">Toggle Dots</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="small">Pro tip: once styled, hide the ⚙️ button for kiosk use (comment it out or use CSS).</div>
-  </div>
-</aside>
-
-<script>
-/* ===== Minimal JS logic — display stays clean; controls live in sidebar ===== */
-const $ = s=>document.querySelector(s);
-const $$ = s=>document.querySelectorAll(s);
-
-/* Sidebar open/close */
-$('#openCtl').onclick = ()=> $('#aside').classList.add('open');
-$('#closeCtl').onclick = ()=> $('#aside').classList.remove('open');
-
-/* Team + colours + logos */
-const setCSS = (k,v)=> document.documentElement.style.setProperty(k, v);
-
-function applyTeamFields(){
-  const hn = $('#homeNameInput').value || 'Home';
-  const an = $('#awayNameInput').value || 'Away';
-  $('#homeName').textContent = hn;
-  $('#awayName').textContent = an;
-  $('#homeRibbonText').textContent = hn.toUpperCase();
-  $('#awayRibbonText').textContent = an.toUpperCase();
-
-  const hc = $('#homeColor').value || '#ff3d5a';
-  const ac = $('#awayColor').value || '#19b8ff';
-  setCSS('--home', hc);
-  setCSS('--away', ac);
-
-  const hL = $('#homeLogoInput').value.trim();
-  const aL = $('#awayLogoInput').value.trim();
-  if (hL) setCSS('--home-logo', `url('${hL}')`);
-  if (aL) setCSS('--away-logo', `url('${aL}')`);
-
-  const bg = $('#bgInput').value.trim();
-  if (bg) setCSS('--bg-image', `url('${bg}')`);
-}
-['#homeNameInput','#awayNameInput','#homeColor','#awayColor','#homeLogoInput','#awayLogoInput','#bgInput'].forEach(id=>{
-  $(id).addEventListener('input', applyTeamFields);
-});
-
-/* Scores / fouls / TOL */
-let home=0, away=0;
-function drawScores(){
-  $('#homeScore').textContent = String(home).padStart(2,'0');
-  $('#awayScore').textContent = String(away).padStart(2,'0');
-  $('#homeVal').value = home; $('#awayVal').value = away;
-}
-$('#homePlus').onclick = ()=>{ home++; drawScores(); };
-$('#homeMinus').onclick = ()=>{ home=Math.max(0,home-1); drawScores(); };
-$('#awayPlus').onclick = ()=>{ away++; drawScores(); };
-$('#awayMinus').onclick = ()=>{ away=Math.max(0,away-1); drawScores(); };
-$('#homeVal').oninput = e=>{ home = Math.max(0, Number(e.target.value)||0); drawScores(); };
-$('#awayVal').oninput = e=>{ away = Math.max(0, Number(e.target.value)||0); drawScores(); };
-
-function syncFoulsTol(){
-  const hf = Math.max(0, +$('#homeFoulInput').value||0);
-  const af = Math.max(0, +$('#awayFoulInput').value||0);
-  const ht = Math.max(0, +$('#homeTolInput').value||0);
-  const at = Math.max(0, +$('#awayTolInput').value||0);
-  $('#homeFouls').textContent = hf; $('#awayFouls').textContent = af;
-  $('#homeFoulsB').textContent = hf; $('#awayFoulsB').textContent = af;
-  $('#homeTol').textContent = ht;   $('#awayTol').textContent = at;
-  $('#homeTolB').textContent = ht;  $('#awayTolB').textContent = at;
-}
-['#homeFoulInput','#awayFoulInput','#homeTolInput','#awayTolInput'].forEach(id=> $(id).addEventListener('input', syncFoulsTol));
-
-/* Period & possession */
-let format='Q', period=1, possession='HOME';
-function drawPeriod(){
-  $('#periodText').textContent = format;
-  $('#periodNum').textContent = period;
-}
-function drawPoss(){
-  $('#posText').textContent = possession;
-}
-$('#formatSel').onchange = e=>{ format = e.target.value; period = 1; drawPeriod(); };
-$('#prevPeriod').onclick = ()=>{ period = Math.max(1, period-1); drawPeriod(); };
-$('#nextPeriod').onclick = ()=>{ const max = (format==='Q')?4:2; period = (period%max)+1; drawPeriod(); };
-$('#posHome').onclick = ()=>{ possession='HOME'; drawPoss(); };
-$('#posAway').onclick = ()=>{ possession='AWAY'; drawPoss(); };
-
-/* Clock */
-let running=false, countdown=12*60, lastTs=null, rafId=null, defaultReset=12*60;
-function fmt(s){ const m=Math.floor(s/60), x=Math.floor(s%60); return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`; }
-function drawClock(){ $('#clock').textContent = fmt(Math.max(0,countdown)); $('#setTime').value = fmt(Math.max(0,countdown)); }
-function loop(ts){
-  if(!running) return;
-  if(lastTs==null) lastTs=ts;
-  const d=(ts-lastTs)/1000;
-  if(d>0){ countdown -= d; if(countdown<=0){ countdown=0; running=false; $('#startPause').textContent='Start'; } drawClock(); lastTs=ts; }
-  rafId=requestAnimationFrame(loop);
-}
-$('#applyTime').onclick=()=>{
-  const v=$('#setTime').value.trim(); const [mm,ss]=v.split(':').map(Number);
-  if(!isNaN(mm)&&!isNaN(ss)){ countdown=mm*60+ss; defaultReset=countdown; drawClock(); }
-};
-$$('[data-t]').forEach(b=> b.onclick=()=>{ const [m,s]=b.dataset.t.split(':').map(Number); countdown=m*60+s; defaultReset=countdown; drawClock(); });
-$('#startPause').onclick=()=>{
-  running=!running; $('#startPause').textContent=running?'Pause':'Start';
-  if(running){ lastTs=null; rafId=requestAnimationFrame(loop);} else cancelAnimationFrame(rafId);
-};
-$('#reset').onclick=()=>{ running=false; cancelAnimationFrame(rafId); countdown=defaultReset; $('#startPause').textContent='Start'; drawClock(); };
-$('#fullscreen').onclick=()=>{ const de=document.documentElement; if(!document.fullscreenElement) de.requestFullscreen?.(); else document.exitFullscreen?.(); };
-
-/* Dots (center row) */
-let dotsOn=0; const dots=$$('#ptsRow .dot');
-function redrawDots(){ dots.forEach((d,i)=> d.classList.toggle('on', i<dotsOn)); }
-$('#dotsAdd').onclick=()=>{ dotsOn = (dotsOn+1)%(dots.length+1); redrawDots(); };
-$('#dotsClear').onclick=()=>{ dotsOn=0; redrawDots(); };
-
-/* Init */
-applyTeamFields(); drawScores(); syncFoulsTol(); drawPeriod(); drawPoss(); drawClock(); redrawDots();
-</script>
-</body>
-</html>
+          <span class="pill" style="outline:2px solid var(--home)">
